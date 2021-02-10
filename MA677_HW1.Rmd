@@ -1,0 +1,45 @@
+---
+title: "MA677_hw1"
+author: "Kunyu Liu"
+date: "2/9/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+
+```{r setup, include=FALSE}
+pacman::p_load(tidyverse,ggplot2)
+```
+
+
+# The explanation of Figure 3.7
+```{r}
+n = 100
+m = c(69, 73)
+p = seq(0.4, 1, 1 / n)
+
+for (i in m) {
+  if (i == m[1]) {
+    df = data.frame(p,
+                    rej = paste('df', i, sep = ''),
+                    Power = cumsum(dbinom(i, n, p)))
+  }
+  else {
+    df = rbind(df, data.frame(
+      p,
+      rej = paste('df', i, sep = ''),
+      Power = cumsum(dbinom(i, n, p))
+    ))
+  }
+}
+
+ggplot(data = df, aes(x = p, y = Power, color = rej)) +
+  geom_rect(aes(xmin = 0.6, xmax = 0.8, ymin = 0.05, ymax = 0.95)) +
+  geom_line() +
+  labs(title = 'Figure 3.7: The power curve')
+
+```
+
+From the plot above, we can see a box from 0.6 to 0.8, which means the p for the old drug is 0.6, and the p for the new drug is 0.8.The height of bottom and top of the box is 0.05 and 0.95 respectively which indicate the 5% type 1 error and (1-95%) type 2 error respectively. As m increases, the graph moves to the right. In this case, the line of m = 69  intersect with type 1 error and the line of m = 73 intersect with the type 2 error. Thus, we may choose our critical value between 69 and 73.
+
